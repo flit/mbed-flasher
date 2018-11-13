@@ -166,7 +166,7 @@ class FlashTestCase(unittest.TestCase):
         flasher = FlasherMbed()
         flasher.copy_file("source_file", "destination")
 
-        file_handle = mock_open.return_value.__enter__.return_value
+        file_handle = mock_open.return_value
 
         self.assertEqual(1, file_handle.flush.call_count)
         file_handle.flush.assert_called_once()
