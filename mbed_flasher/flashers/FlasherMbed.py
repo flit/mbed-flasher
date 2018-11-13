@@ -201,14 +201,22 @@ class FlasherMbed(object):
 
         self.logger.debug("writing binary: %s (size=%i bytes)", destination, len(aux_source))
         try:
-            with open(destination, "wb", 0) as new_file:
-                new_file.write(aux_source)
-                new_file.flush()
+            new_file = open(destination, "wb", 0)
+            new_file.write(aux_source)
+            new_file.flush()
+            try:
+                # Intermittently this step fails in Raspberry PI.
+                # It doesn't seem to affect the result of copy, ignore the fail.
                 os.fsync(new_file.fileno())
+            except (IOError, OSError):
+                self.logger.warning('os.fsync threw, ignoring it')
+                pass
         except (IOError, OSError):
             self.logger.exception("File couldn't be copied")
             raise FlashError(message="File couldn't be copied",
                              return_code=EXIT_CODE_OS_ERROR)
+        finally:
+            new_file.close()
 
     @staticmethod
     def _read_file(path, file_name):
