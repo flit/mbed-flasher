@@ -210,7 +210,6 @@ class FlasherMbed(object):
                 os.fsync(new_file.fileno())
             except (IOError, OSError):
                 self.logger.warning('os.fsync threw, ignoring it')
-                pass
         except (IOError, OSError):
             self.logger.exception("File couldn't be copied")
             raise FlashError(message="File couldn't be copied",
